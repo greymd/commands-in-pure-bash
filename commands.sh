@@ -9,6 +9,10 @@ bash_cat () {
   printf "%s" "$(<"${_fname}")"
 }
 
+bash_pwd () {
+  printf "%s\\n" "$PWD"
+}
+
 # Usage: bash_seq N M
 bash_seq () {
   eval "printf \"%d\\n\" {$1..$2}"
@@ -54,6 +58,32 @@ bash_tac () {
   shopt -s extdebug
   f()(printf '%s\n' "${BASH_ARGV[@]}"); f "${_file_data[@]}"
   shopt -u extdebug
+}
+
+# Usage: bash_grep <pattern> filename
+bash_grep () {
+  local _pat="$1" ;shift
+  local _fname=${1:-/dev/stdin}
+  while read -r line ; do
+    if [[ "${line}" =~ $_pat ]];then
+      printf "%s\\n" "${line}"
+    fi
+  done < "$_fname"
+}
+
+# Usage: bash_sed <before> <after> filename
+# s command + global option (s///g) only.
+bash_sed () {
+  local _pat="$1" ;shift
+  local _pat_update="$1" ;shift
+  local _fname=${1:-/dev/stdin}
+  while read -r line ; do
+    if [[ "${line}" =~ $_pat ]];then
+      printf "%s\\n" "${line//$_pat/$_pat_update}"
+    else
+      printf "%s\\n" "${line}"
+    fi
+  done < "$_fname"
 }
 
 # Usage: echo <hext string> | bash_xxd_r
