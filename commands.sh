@@ -89,7 +89,6 @@ bash_basename() {
 # See: 'man strftime' for format.
 # bash 4+
 # [URL] https://github.com/dylanaraps/pure-bash-bible#get-the-current-date-using-strftime
-# [LICENSE] https://github.com/dylanaraps/pure-bash-bible/blob/master/LICENSE.md
 bash4_date() {
     printf "%($1)T\\n" "-1"
 }
