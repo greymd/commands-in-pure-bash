@@ -47,18 +47,15 @@ bash_tail () {
   done
 }
 
-bash_tail () {
-  local _num=${1:-10} ; shift
+# Usage: bash_tac filename
+bash_tac () {
   local _fname=${1:-/dev/stdin}
   IFS=$'\n' read -d "" -ra _file_data < "$_fname"
-  local i=0
-  local begin end
-  begin=0
-  end=$(( ${#_file_data[@]} ))
-  for ((i=begin;i<end;i++)); do
-      printf '%s\n' "${_file_data[$i]}"
-  done
+  shopt -s extdebug
+  f()(printf '%s\n' "${BASH_ARGV[@]}"); f "${_file_data[@]}"
+  shopt -u extdebug
 }
+
 # Usage: echo <hext string> | bash_xxd_r
 # Alternative of `xxd -r`
 bash_xxd_r() {
@@ -71,15 +68,18 @@ bash_xxd_r() {
   done
 }
 
-# [URL] https://github.com/dylanaraps/pure-bash-bible#get-the-directory-name-of-a-file-path
+# --------------------
+# Following commands are distributed in MIT license
 # [LICENSE] https://github.com/dylanaraps/pure-bash-bible/blob/master/LICENSE.md
+# --------------------
+
+# [URL] https://github.com/dylanaraps/pure-bash-bible#get-the-directory-name-of-a-file-path
 bash_dirname() {
   printf '%s\n' "${1%/*}/"
 }
 
 # Usage: basename "path"
 # [URL] https://github.com/dylanaraps/pure-bash-bible#get-the-base-name-of-a-file-path
-# [LICENSE] https://github.com/dylanaraps/pure-bash-bible/blob/master/LICENSE.md
 bash_basename() {
   : "${1%/}"
   printf '%s\n' "${_##*/}"
