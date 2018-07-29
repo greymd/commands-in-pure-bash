@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright (C) 2018 Yasuhiro Yamada
+# MIT License is applied to this script
 
 # Usage: bash_cat <file>
 # Usage: command | bash_cat
@@ -33,9 +35,30 @@ bash_head () {
 
 # Usage: bash_tail N filename
 bash_tail () {
+  local _num=${1:-10} ; shift
   local _fname=${1:-/dev/stdin}
+  IFS=$'\n' read -d "" -ra _file_data < "$_fname"
+  local i=0
+  local begin end
+  begin=$(( ${#_file_data[@]} - _num ))
+  end=$(( ${#_file_data[@]} ))
+  for ((i=begin;i<end;i++)); do
+      printf '%s\n' "${_file_data[$i]}"
+  done
 }
 
+bash_tail () {
+  local _num=${1:-10} ; shift
+  local _fname=${1:-/dev/stdin}
+  IFS=$'\n' read -d "" -ra _file_data < "$_fname"
+  local i=0
+  local begin end
+  begin=0
+  end=$(( ${#_file_data[@]} ))
+  for ((i=begin;i<end;i++)); do
+      printf '%s\n' "${_file_data[$i]}"
+  done
+}
 # Usage: echo <hext string> | bash_xxd_r
 # Alternative of `xxd -r`
 bash_xxd_r() {
@@ -49,12 +72,14 @@ bash_xxd_r() {
 }
 
 # [URL] https://github.com/dylanaraps/pure-bash-bible#get-the-directory-name-of-a-file-path
+# [LICENSE] https://github.com/dylanaraps/pure-bash-bible/blob/master/LICENSE.md
 bash_dirname() {
   printf '%s\n' "${1%/*}/"
 }
 
 # Usage: basename "path"
 # [URL] https://github.com/dylanaraps/pure-bash-bible#get-the-base-name-of-a-file-path
+# [LICENSE] https://github.com/dylanaraps/pure-bash-bible/blob/master/LICENSE.md
 bash_basename() {
   : "${1%/}"
   printf '%s\n' "${_##*/}"
@@ -64,6 +89,7 @@ bash_basename() {
 # See: 'man strftime' for format.
 # bash 4+
 # [URL] https://github.com/dylanaraps/pure-bash-bible#get-the-current-date-using-strftime
+# [LICENSE] https://github.com/dylanaraps/pure-bash-bible/blob/master/LICENSE.md
 bash4_date() {
     printf "%($1)T\\n" "-1"
 }
